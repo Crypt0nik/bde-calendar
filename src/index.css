@@ -60,21 +60,31 @@ body {
 
 /* ── DARK MODE TOGGLE ── */
 .dark-toggle {
-  background: var(--tag-bg-default);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 6px 14px;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 13px;
+  padding: 8px;
+  border-radius: 10px;
   color: var(--text-faint);
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
 }
 
 .dark-toggle:hover {
-  border-color: var(--text-muted);
+  background: var(--tag-bg-default);
+  color: var(--text-primary);
+}
+
+.dark-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.dark-toggle:hover svg {
+  transform: rotate(15deg);
 }
 
 /* ── MOBILE MODAL OVERLAY ── */
