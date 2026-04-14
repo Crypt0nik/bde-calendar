@@ -93,22 +93,22 @@ export default function App() {
 
       {/* ── HEADER ── */}
       <header style={{ background: "#fff", borderBottom: "1px solid #ebebeb" }}>
-        <div style={{ maxWidth: 1060, margin: "0 auto", padding: "32px 28px 0" }}>
-          <p style={{ fontSize: 12, color: "#b0b0b0", margin: "0 0 2px", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Planning communication</p>
-          <h1 style={{ fontSize: 42, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "#111", letterSpacing: "-0.5px" }}>
+        <div className="app-header-inner" style={{ maxWidth: 1060, margin: "0 auto", padding: "32px 28px 0" }}>
+          <p className="app-subtitle" style={{ fontSize: 12, color: "#b0b0b0", margin: "0 0 2px", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Planning communication</p>
+          <h1 className="app-title" style={{ fontSize: 42, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "#111", letterSpacing: "-0.5px" }}>
             Avril <span style={{ fontStyle: "italic" }}>2026</span>
           </h1>
 
-          <div style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
+          <div className="event-pills" style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
             {EVENT_RECAP.map(e => (
-              <span key={e.key} style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: "#555", background: "#fff", border: "1px solid #e8e8e8", borderRadius: 100, padding: "5px 14px 5px 10px" }}>
+              <span key={e.key} className="event-pill" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: "#555", background: "#fff", border: "1px solid #e8e8e8", borderRadius: 100, padding: "5px 14px 5px 10px" }}>
                 <span style={{ width: 7, height: 7, borderRadius: "50%", background: EC[e.key], display: "inline-block" }} />
-                {e.name} <span style={{ color: "#bbb", fontSize: 12 }}>·</span> <span style={{ color: "#aaa", fontSize: 12 }}>{e.date}</span>
+                {e.name} <span style={{ color: "#bbb", fontSize: 12 }}>·</span> <span className="event-pill-date" style={{ color: "#aaa", fontSize: 12 }}>{e.date}</span>
               </span>
             ))}
           </div>
 
-          <nav style={{ display: "flex", gap: 0, marginTop: 22 }}>
+          <nav className="app-nav" style={{ display: "flex", gap: 0, marginTop: 22 }}>
             {["calendar", "events", "ideas"].map(id => {
               const labels = { calendar: "Calendrier", events: "Fiches events", ideas: "Boîte à idées" };
               return (
@@ -123,28 +123,29 @@ export default function App() {
         </div>
       </header>
 
-      <main style={{ maxWidth: 1060, margin: "0 auto", padding: "28px 28px 80px" }}>
+      <main className="app-main" style={{ maxWidth: 1060, margin: "0 auto", padding: "28px 28px 80px" }}>
 
         {/* ═══ CALENDAR ═══ */}
         {tab === "calendar" && (<>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: 2 }}>
+          <div className="calendar-days-header" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: 2 }}>
             {DAYS.map((d, i) => (
               <div key={i} style={{ textAlign: "center", padding: "10px 0 6px", fontSize: 10, fontWeight: 500, color: "#c0c0c0", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>{d}</div>
             ))}
           </div>
 
-          <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div className="calendar-grid" style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             {weeks.map((wk, wi) => (
-              <div key={wi} style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderBottom: wi < weeks.length - 1 ? "1px solid #f2f2f2" : "none" }}>
+              <div key={wi} className="calendar-week" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderBottom: wi < weeks.length - 1 ? "1px solid #f2f2f2" : "none" }}>
                 {wk.map((day, di) => {
-                  if (!day) return <div key={di} style={{ borderRight: di < 6 ? "1px solid #f2f2f2" : "none", minHeight: 128, background: "#fafafa" }} />;
+                  if (!day) return <div key={di} className="calendar-cell-empty" style={{ borderRight: di < 6 ? "1px solid #f2f2f2" : "none", minHeight: 128, background: "#fafafa" }} />;
                   const d = EVENTS[day]; const meta = d ? PHASE_META[d.phase] : null;
                   const isOff = d?.phase === "off"; const isEv = d?.phase?.startsWith("event-");
                   const isSel = selected === day; const ek = getEK(d?.phase);
                   const accent = ek ? EC[ek] : null; const isToday = day === 14;
+                  const dow = (2 + day - 1) % 7;
 
                   return (
-                    <div key={di} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
+                    <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
                       borderRight: di < 6 ? "1px solid #f2f2f2" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
                       background: isSel ? (accent ? `${accent}06` : "#f8f8ff") : isEv ? `${accent}06` : "#fff",
@@ -152,10 +153,10 @@ export default function App() {
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                        <span style={{
+                        <span className="cell-day-number" style={{
                           fontSize: 20, fontWeight: isEv ? 700 : 500, fontFamily: "'JetBrains Mono', monospace",
                           color: isOff ? "#d0d0d0" : isEv ? accent : isToday ? "#6366f1" : "#333",
-                        }}>{day}</span>
+                        }}><span className="cell-day-name" style={{ display: "none" }}>{DAYS_FULL[dow]} </span>{day}</span>
                         {isToday && <span style={{ fontSize: 8, background: "#6366f1", color: "#fff", padding: "2px 6px", borderRadius: 3, fontWeight: 600, letterSpacing: 0.5 }}>Aujourd'hui</span>}
                       </div>
 
@@ -171,8 +172,8 @@ export default function App() {
                         )}
                         {d?.event && <div style={{ fontSize: 11, fontWeight: 700, color: accent, lineHeight: 1.2, marginBottom: 3 }}>{d.event}</div>}
                         {d?.format && <div style={{ fontSize: 10, color: "#888", lineHeight: 1.4, marginBottom: 2 }}>{d.format}</div>}
-                        {d?.platform && <div style={{ fontSize: 9, color: "#c0c0c0", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
-                        {d?.time && <div style={{ fontSize: 9, color: "#bbb", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, right: 10 }}>{d.time}</div>}
+                        {d?.platform && <div className="cell-platform" style={{ fontSize: 9, color: "#c0c0c0", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
+                        {d?.time && <div className="cell-time" style={{ fontSize: 9, color: "#bbb", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, right: 10 }}>{d.time}</div>}
                       </>)}
                     </div>
                   );
@@ -186,21 +187,21 @@ export default function App() {
             const ek = getEK(ev.phase); const accent = ek ? EC[ek] : "#6366f1";
             const dow = (2 + selected - 1) % 7;
             return (
-              <div style={{ marginTop: 20, background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", animation: "su .2s ease" }}>
+              <div className="detail-panel" style={{ marginTop: 20, background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", animation: "su .2s ease" }}>
                 <style>{`@keyframes su{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
-                <div style={{ padding: "22px 28px 18px", borderBottom: "1px solid #f2f2f2", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div className="detail-header" style={{ padding: "22px 28px 18px", borderBottom: "1px solid #f2f2f2", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
                     <p style={{ fontSize: 11, color: "#bbb", fontFamily: "'JetBrains Mono', monospace", margin: "0 0 4px" }}>{DAYS_FULL[dow]} {selected} avril 2026</p>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 22, fontWeight: 600, color: "#111", fontFamily: "'Instrument Serif', serif" }}>{ev.format || "Contenu du jour"}</span>
+                      <span className="detail-title" style={{ fontSize: 22, fontWeight: 600, color: "#111", fontFamily: "'Instrument Serif', serif" }}>{ev.format || "Contenu du jour"}</span>
                       <span style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: pm.tagBg, color: pm.tagColor }}>{pm.label}</span>
                     </div>
                     {ev.event && <p style={{ fontSize: 14, fontWeight: 500, color: accent, margin: "6px 0 0" }}>{ev.event} — {ev.eventSub}</p>}
                   </div>
                   <button onClick={() => setSelected(null)} style={{ background: "#f5f5f5", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: "#aaa" }}>✕</button>
                 </div>
-                <div style={{ padding: "22px 28px 28px" }}>
-                  <div style={{ display: "flex", gap: 32, marginBottom: 22, flexWrap: "wrap" }}>
+                <div className="detail-body" style={{ padding: "22px 28px 28px" }}>
+                  <div className="detail-meta-row" style={{ display: "flex", gap: 32, marginBottom: 22, flexWrap: "wrap" }}>
                     {[["Plateforme", ev.platform], ["Heure de publication", ev.time]].map(([l, v]) => (
                       <div key={l}>
                         <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
@@ -210,7 +211,7 @@ export default function App() {
                   </div>
                   <div style={{ marginBottom: 18 }}>
                     <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Contenu à publier</p>
-                    <div style={{ background: "#fafafa", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "#333", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
+                    <div className="detail-content-box" style={{ background: "#fafafa", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "#333", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
                   </div>
                   <div>
                     <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>💡 Conseil</p>
@@ -231,14 +232,14 @@ export default function App() {
               const rows = [["Date", e.date], ["Horaires", e.time], ["Lieu", e.lieu], ["Type", e.type], ["Thème", e.theme], ["Capacité", e.capacite], ["Prix", e.prix], ["Inscription", e.inscription], ["Particularité", e.part], ["Période teasing", e.teasing], ["Visuels à créer", e.visuels]];
               return (
                 <div key={e.key} style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-                  <div style={{ padding: "22px 28px", borderBottom: "1px solid #f2f2f2", display: "flex", alignItems: "center", gap: 14 }}>
+                  <div className="event-card-header" style={{ padding: "22px 28px", borderBottom: "1px solid #f2f2f2", display: "flex", alignItems: "center", gap: 14 }}>
                     <div style={{ width: 4, height: 36, borderRadius: 2, background: c }} />
                     <div>
                       <h2 style={{ fontSize: 22, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "#111" }}>{e.emoji} {e.name}</h2>
                       <p style={{ fontSize: 13, color: "#aaa", margin: "2px 0 0" }}>{e.date} · {e.time}</p>
                     </div>
                   </div>
-                  <div style={{ padding: "18px 28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "14px 28px" }}>
+                  <div className="event-card-grid" style={{ padding: "18px 28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "14px 28px" }}>
                     {rows.map(([l, v]) => (
                       <div key={l}>
                         <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 3px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
@@ -255,7 +256,7 @@ export default function App() {
         {/* ═══ IDEAS ═══ */}
         {tab === "ideas" && (<>
           <p style={{ fontSize: 14, color: "#999", margin: "0 0 20px", fontStyle: "italic" }}>12 formats créatifs à utiliser pour tes stories et posts tout au long du mois.</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+          <div className="ideas-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
             {IDEAS.map((idea, i) => (
               <div key={i} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e8e8e8", padding: "20px 22px", display: "flex", flexDirection: "column", gap: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>

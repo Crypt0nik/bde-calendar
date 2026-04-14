@@ -8,3 +8,160 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .app-header-inner {
+    padding: 20px 16px 0 !important;
+  }
+
+  .app-title {
+    font-size: 28px !important;
+  }
+
+  .app-subtitle {
+    font-size: 10px !important;
+  }
+
+  .event-pills {
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin-top: 14px !important;
+  }
+
+  .event-pill {
+    font-size: 12px !important;
+    padding: 4px 10px 4px 8px !important;
+  }
+
+  .event-pill-date {
+    display: none !important;
+  }
+
+  .app-nav {
+    margin-top: 16px !important;
+  }
+
+  .app-nav button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .app-main {
+    padding: 16px 12px 60px !important;
+  }
+
+  /* Calendar: 1 column list on mobile */
+  .calendar-days-header {
+    display: none !important;
+  }
+
+  .calendar-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    gap: 6px;
+  }
+
+  .calendar-week {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px;
+    border-bottom: none !important;
+  }
+
+  .calendar-cell {
+    border-right: none !important;
+    min-height: auto !important;
+    padding: 12px 14px !important;
+    border-radius: 10px !important;
+    border: 1px solid #e8e8e8 !important;
+    background: #fff !important;
+  }
+
+  .calendar-cell-off {
+    display: none !important;
+  }
+
+  .calendar-cell-empty {
+    display: none !important;
+  }
+
+  .calendar-cell .cell-day-number {
+    font-size: 16px !important;
+  }
+
+  .calendar-cell .cell-platform {
+    position: static !important;
+    margin-top: 6px;
+  }
+
+  .calendar-cell .cell-time {
+    position: static !important;
+    margin-top: 2px;
+  }
+
+  .calendar-cell .cell-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  /* Detail panel */
+  .detail-panel {
+    margin-top: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .detail-header {
+    padding: 16px 16px 14px !important;
+    flex-direction: column !important;
+    gap: 10px;
+  }
+
+  .detail-header .detail-title {
+    font-size: 18px !important;
+  }
+
+  .detail-body {
+    padding: 16px !important;
+  }
+
+  .detail-meta-row {
+    gap: 20px !important;
+  }
+
+  .detail-content-box {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Events tab */
+  .event-card-header {
+    padding: 16px !important;
+  }
+
+  .event-card-header h2 {
+    font-size: 18px !important;
+  }
+
+  .event-card-grid {
+    padding: 14px 16px 18px !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Ideas tab */
+  .ideas-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Show day name on mobile */
+  .cell-day-name {
+    display: inline !important;
+  }
+}
