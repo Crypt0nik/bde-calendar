@@ -1,36 +1,36 @@
 import { useState, useEffect } from "react";
 
 const EVENTS = {
-  1: { phase: "regular", platform: "Instagram Story", content: "Story \"Avril c'est parti 🔥\" — Sondage : Prêts pour un mois de folie ? OUI / ÉVIDEMMENT", time: "18h00", tip: "Premier jour du mois = donner le ton, énergie max", format: "Sondage interactif" },
-  2: { phase: "regular", platform: "Instagram Story", content: "Story Q&A : \"Quel event vous rêvez de voir ce mois ?\" + sticker question", time: "12h30", tip: "Récolter des idées + engagement", format: "Q&A sticker" },
-  3: { phase: "regular", platform: "Instagram Post", content: "Post carrousel \"Ce qui vous attend en avril\" — 3 slides mystère avec dates + emojis 🏴‍☠️⚽💋 sans révéler les détails", time: "18h00", tip: "Créer du mystère, garder les infos floues", format: "Carrousel mystère" },
+  1: { phase: "off" },
+  2: { phase: "off" },
+  3: { phase: "off" },
   4: { phase: "off" },
   5: { phase: "off" },
-  6: { phase: "regular", platform: "Instagram Story", content: "Story \"Lundi motivation\" — Rétrospective photo/vidéo des derniers events BDE avec musique trending", time: "18h00", tip: "Rappeler l'ambiance des soirées passées", format: "Rétrospective vidéo" },
-  7: { phase: "regular", platform: "Instagram Story", content: "Story interactive : \"Tu es plutôt soirée bar 🍹 ou soirée boîte 🪩 ?\" — Sondage à deux options", time: "12h30", tip: "Préparer le terrain pour les 2 events", format: "Sondage 2 options" },
-  8: { phase: "regular", platform: "TikTok + Story", content: "TikTok trend avec membres du BDE — Texte overlay \"Le BDE prépare des trucs...\" + regard caméra suspicieux", time: "19h00", tip: "Format court viral, donner envie de follow pour la suite", format: "TikTok trend" },
-  9: { phase: "regular", platform: "Instagram Story", content: "Story \"Jeudi confession\" — Les membres du BDE confessent leur pire soirée étudiante (format facecam drôle)", time: "18h00", tip: "Humaniser le BDE, créer de la proximité", format: "Facecam confession" },
-  10: { phase: "regular", platform: "Instagram Post", content: "Post photo/vidéo ambiance : \"La semaine prochaine ça va chauffer 🔥\" — Pas plus de détails, laisser le suspense", time: "18h00", tip: "Cliffhanger pour le weekend", format: "Post teaser" },
+  6: { phase: "off" },
+  7: { phase: "off" },
+  8: { phase: "off" },
+  9: { phase: "off" },
+  10: { phase: "off" },
   11: { phase: "off" },
   12: { phase: "off" },
-  13: { phase: "teasing-pirate", platform: "Instagram Story", content: "Story mystère : fond noir + texte qui apparaît \"Vendredi. 21h30. Préparez vos costumes.\" 🏴‍☠️ — Musique Pirates des Caraïbes en fond", time: "18h00", tip: "Premier vrai teaser — ne pas tout révéler, garder le mystère", format: "Teaser mystère" },
-  14: { phase: "teasing-pirate", platform: "Insta Post + Story", content: "ANNONCE OFFICIELLE 🏴‍☠️ Post visuel soirée pirate : Bar Barracuda, Vendredi 17 avril, 21h30-2h30, thème pirate + prix étudiant. Story facecam d'un membre BDE déguisé en pirate qui annonce la soirée", time: "18h00", tip: "⚠️ Visuel à créer. Facecam = x3 engagement vs visuel statique", format: "Post annonce + Facecam" },
-  15: { phase: "teasing-pirate", platform: "Instagram Story", content: "Story \"Ton costume pirate est prêt ?\" — Sondage + Partage inspi costumes (chapeau, bandana, eye-patch). Ajouter un compte à rebours J-2", time: "12h30", tip: "Sticker compte à rebours = rappel auto pour les abonnés", format: "Sondage + Countdown" },
-  16: { phase: "teasing-pirate", platform: "Story + TikTok", content: "Story GRWM (Get Ready With Me) version pirate par un membre du BDE 🏴‍☠️ — TikTok du même contenu. \"Demain c'est la guerre, moussaillons ⚔️\" + rappel horaire/lieu", time: "19h00", tip: "GRWM = format très engageant, parfait veille d'event. Rappeler infos pratiques", format: "GRWM vidéo" },
+  13: { phase: "off" },
+  14: { phase: "off" },
+  15: { phase: "teasing-pirate", platform: "Insta Post + Story", content: "ANNONCE OFFICIELLE 🏴‍☠️ Post visuel soirée pirate : Bar Barracuda, Jeudi 17 avril, 21h30-2h30, thème pirate + prix étudiant.\n\nStory facecam d'un membre BDE déguisé en pirate qui annonce la soirée + sondage \"Ton costume pirate est prêt ?\" avec inspi costumes (chapeau, bandana, eye-patch).\n\nAjouter un sticker compte à rebours J-2.", time: "18h00", tip: "⚠️ Visuel à créer. Facecam = x3 engagement vs visuel statique. Sticker countdown = rappel auto pour les abonnés", format: "Post annonce + Facecam + Countdown" },
+  16: { phase: "teasing-pirate", platform: "Story + TikTok", content: "Story GRWM (Get Ready With Me) version pirate par un membre du BDE 🏴‍☠️ — TikTok du même contenu.\n\n\"Demain c'est la guerre, moussaillons ⚔️\" + rappel horaire/lieu", time: "19h00", tip: "GRWM = format très engageant, parfait veille d'event. Rappeler infos pratiques", format: "GRWM vidéo" },
   17: { phase: "event-pirate", platform: "Insta Story ×5 min.", content: "JOUR J 🏴‍☠️\n• Matin : Story compte à rebours \"Ce soir on envahit le Barracuda\"\n• 17h : Story rappel infos (lieu, heure, prix)\n• 20h : Story facecam \"On est en route, vous êtes où ?\"\n• Pendant : Stories live de la soirée (ambiance, foule, musique)\n• Fin : Story \"Merci à tous, vous êtes des pirates incroyables\"", time: "Toute la journée", tip: "Minimum 4-5 stories. Filmer un max pendant la soirée pour le recap du lendemain", format: "Multi-story jour J", event: "SOIRÉE PIRATE", eventSub: "Bar Barracuda · 21h30–2h30 · Thème Pirate" },
   18: { phase: "recap-pirate", platform: "Story + Post", content: "Story best-of de la soirée pirate 🏴‍☠️ — Vidéo montage des meilleurs moments + Post carrousel \"Retour sur la soirée pirate\" avec les meilleures photos", time: "16h00", tip: "Poster le lendemain tant que c'est frais. Taguer les gens = plus de partages", format: "Montage vidéo + Carrousel" },
-  19: { phase: "recap-pirate", platform: "Instagram Story", content: "Story \"Vos plus belles photos de la soirée\" — Republier les stories où le BDE est tagué + meilleur costume pirate (voter en story)", time: "14h00", tip: "Republier = engagement gratuit + valoriser la communauté", format: "Repost UGC + Vote" },
-  20: { phase: "teasing-five", platform: "Instagram Story", content: "Story transition : \"La pirate night c'était fou 🏴‍☠️ mais c'est pas fini... ⚽\" — Teaser mystère pour le prochain event", time: "18h00", tip: "Enchaîner les events pour garder le momentum", format: "Teaser transition" },
-  21: { phase: "teasing-five", platform: "Insta Post + Story", content: "ANNONCE FIVE ⚽ Post visuel : Jeudi 23 avril, 19h, Five mixte, 10 places, inscription obligatoire, payant. Story facecam : un membre BDE avec un ballon explique le concept + comment s'inscrire", time: "18h00", tip: "⚠️ Visuel à créer. Mettre le lien/contact inscription en story (sticker lien ou DM)", format: "Post annonce + Facecam" },
-  22: { phase: "teasing-five", platform: "Instagram Story", content: "Story \"Plus que quelques places ⚽🔥\" — Montrer le nombre d'inscrits (ex: 7/10). \"DM pour réserver ta place\". Story sondage : \"Qui va mettre le but de la victoire ?\"", time: "12h30", tip: "Créer l'urgence avec les places limitées = FOMO. Montrer que ça se remplit", format: "Urgence FOMO + Sondage" },
+  19: { phase: "recap-pirate", secondaryPhase: "teasing-five", platform: "Instagram Story", content: "🏴‍☠️ Story \"Vos plus belles photos de la soirée\" — Republier les stories où le BDE est tagué + vote meilleur costume pirate.\n\n⚽ Teaser transition : \"La pirate night c'était fou 🏴‍☠️ mais c'est pas fini... quelque chose arrive mercredi ⚽\" — Premier teaser Five en fin de journée", time: "14h + 20h", tip: "Double contenu : capitaliser sur la pirate + lancer le teasing Five. Le momentum post-soirée est parfait pour annoncer la suite", format: "Repost UGC + Teaser Five" },
+  20: { phase: "teasing-five", platform: "Insta Post + Story", content: "ANNONCE FIVE ⚽ Post visuel : Mercredi 23 avril, 19h, Five mixte, 10 places, inscription obligatoire, payant.\n\nStory facecam : un membre BDE avec un ballon explique le concept + comment s'inscrire (DM ou lien)", time: "18h00", tip: "⚠️ Visuel à créer. Mettre le lien/contact inscription en story (sticker lien ou DM). Lancer les inscriptions dès maintenant", format: "Post annonce + Facecam" },
+  21: { phase: "teasing-five", secondaryPhase: "teasing-bisous", platform: "Story + Story", content: "⚽ Story \"Plus que quelques places ⚽🔥\" — Montrer le nombre d'inscrits (ex: 7/10). \"DM pour réserver ta place\". Sondage : \"Qui va mettre le but de la victoire ?\"\n\n💋 Story mystère en soirée : fond noir + texte \"Quelque chose de gros arrive fin avril... 💋🪩\" — Premier teaser Bisous Bisous", time: "12h30 + 21h", tip: "Matin = urgence FOMO Five avec places limitées. Soir = planter la graine Bisous Bisous. 2 events promus = 2 raisons de regarder les stories", format: "FOMO Five + Teaser Bisous" },
+  22: { phase: "teasing-five", secondaryPhase: "teasing-bisous", platform: "Story + Story", content: "⚽ Story rappel veille de match : \"Demain 19h, c'est la guerre ⚽🔥\" — Liste des inscrits / équipes si possible. Compte à rebours J-1.\n\n💋 Story teaser Bisous : \"Jeudi 30 avril... la nuit la plus folle du mois arrive 💋\" — Musique house en fond, texte progressif", time: "18h + 21h", tip: "Dernier rappel Five = confirmer les joueurs. Continuer à faire monter la hype Bisous en parallèle", format: "Rappel Five + Teaser Bisous" },
   23: { phase: "event-five", platform: "Insta Story ×4 min.", content: "JOUR J FIVE ⚽\n• Midi : Story rappel \"Ce soir 19h, soyez chauds\"\n• 18h : Story facecam en tenue de sport \"On se retrouve dans 1h\"\n• Pendant : Stories live du match (buts, ambiance, célébrations)\n• Après : Story résultat final + MVP du match", time: "Toute la journée", tip: "Filmer les buts et les célébrations ! Parfait pour TikTok aussi", format: "Multi-story jour J", event: "FIVE FOOTBALL", eventSub: "19h · 10 joueurs · Mixte · Sur inscription" },
-  24: { phase: "recap-five", platform: "Story + Post", content: "Story best-of du five ⚽ — Montage vidéo des meilleurs moments + Post photo d'équipe avec score final", time: "18h00", tip: "Taguer tous les joueurs, republier leurs stories", format: "Montage + Photo équipe" },
+  24: { phase: "recap-five", secondaryPhase: "teasing-bisous", platform: "Story + Post + Story", content: "⚽ Story best-of du five — Montage vidéo des meilleurs moments + Post photo d'équipe avec score final. Taguer tous les joueurs.\n\n💋 Story teaser Bisous en soirée : \"Le five c'était incroyable ⚽ mais la semaine prochaine c'est un autre niveau... 💋🪩\" — Transition vers Bisous Bisous", time: "16h + 21h", tip: "Enchaîner recap Five + teaser Bisous pour garder le momentum. Les gens qui ont aimé le five voudront la suite", format: "Recap Five + Teaser Bisous" },
   25: { phase: "off" },
   26: { phase: "off" },
-  27: { phase: "teasing-bisous", platform: "Instagram Story", content: "Story mystère : écran noir → texte qui s'affiche lettre par lettre \"Jeudi soir... préparez-vous pour la nuit la plus folle du mois 💋🪩\" — Musique house/techno en fond", time: "18h00", tip: "Suspense max, ne rien révéler encore", format: "Teaser mystère" },
-  28: { phase: "teasing-bisous", platform: "Post + Story + TikTok", content: "ANNONCE OFFICIELLE 💋 Post visuel : Bisous Bisous, Jeudi 30 avril, 00h-5h, soirée interBDE. Story facecam excitée \"La dernière soirée d'avril va être INCROYABLE\" — TikTok teaser avec le son trending du moment", time: "18h00", tip: "⚠️ Visuel à créer. Gros post = likes + saves + partages", format: "Post annonce + Facecam + TikTok" },
-  29: { phase: "teasing-bisous", platform: "Instagram Story", content: "Story interactive : \"Avec qui tu viens jeudi ? 💋\" Tag ton/ta pote. Sondage : \"Before ou pas before ?\" + Compte à rebours J-1. Si before confirmé : annoncer le lieu/heure", time: "19h00", tip: "Le sondage before donne un signal sur la demande. Compte à rebours = rappel auto", format: "Tag + Sondage + Countdown" },
-  30: { phase: "event-bisous", platform: "Insta Story ×6 min.", content: "JOUR J 💋\n• Après-midi : Story \"Ce soir c'est la dernière soirée du mois, on finit en beauté\"\n• 20h : Si before → stories du before (ambiance, arrivées)\n• 23h : Story facecam \"On arrive à Bisous Bisous 🪩\"\n• Pendant : Stories live du dancefloor, DJ, ambiance, lumières\n• Fin : Story \"Avril c'était incroyable, merci à tous 💋\"", time: "Toute la journée", tip: "GROSSE SOIRÉE = maximum de contenu. Filmer pour TikTok aussi. Minimum 6-8 stories sur la soirée", format: "Multi-story jour J", event: "BISOUS BISOUS", eventSub: "00h–5h · InterBDE · Before possible" },
+  27: { phase: "teasing-bisous", platform: "Post + Story + TikTok", content: "ANNONCE OFFICIELLE 💋 Post visuel : Bisous Bisous, Mercredi 30 avril, 00h-5h, soirée interBDE.\n\nStory facecam excitée \"La dernière soirée d'avril va être INCROYABLE\" — TikTok teaser avec le son trending du moment", time: "18h00", tip: "⚠️ Visuel à créer. Gros post = likes + saves + partages. Annoncer tôt pour laisser 3 jours de teasing", format: "Post annonce + Facecam + TikTok" },
+  28: { phase: "teasing-bisous", platform: "Instagram Story", content: "Story sondage : \"Before ou pas before ? 🍹\" — Si before confirmé : annoncer le lieu/heure.\n\nStory compte à rebours J-2 + \"Avec qui tu viens ? 💋\" Tag ton/ta pote", time: "19h00", tip: "Le sondage before donne un signal sur la demande. Compte à rebours = rappel auto. Le tag = viralité organique", format: "Sondage Before + Countdown + Tag" },
+  29: { phase: "teasing-bisous", platform: "Story + TikTok", content: "Story GRWM \"Get Ready With Me\" pour Bisous Bisous 💋 — Un membre du BDE se prépare pour la soirée.\n\n\"Demain on finit le mois en beauté 🪩\" — Rappel infos pratiques (lieu, heure, before). TikTok du même contenu", time: "19h00", tip: "GRWM veille de soirée = format très engageant. Rappeler toutes les infos pratiques une dernière fois", format: "GRWM + Dernier rappel" },
+  30: { phase: "event-bisous", platform: "Insta Story ×6 min.", content: "JOUR J 💋\n• Après-midi : Story \"Ce soir c'est la dernière soirée du mois, on finit en beauté\"\n• 20h : Si before → stories du before (ambiance, arrivées)\n• 23h : Story facecam \"On arrive à Bisous Bisous 🪩\"\n• Pendant : Stories live du dancefloor, DJ, ambiance, lumières\n• Fin : Story \"Avril c'était incroyable, merci à tous 💋\"\n\n📸 Penser à filmer un max pour le recap du 1er mai !", time: "Toute la journée", tip: "GROSSE SOIRÉE = maximum de contenu. Filmer pour TikTok aussi. Minimum 6-8 stories. Le recap sera posté le 1er mai", format: "Multi-story jour J", event: "BISOUS BISOUS", eventSub: "00h–5h · InterBDE · Before possible" },
 };
 
 const PHASE_META = {
@@ -66,23 +66,35 @@ const IDEAS = [
 ];
 
 const EVENT_RECAP = [
-  { key: "pirate", emoji: "🏴‍☠️", name: "Soirée Pirate", date: "Vendredi 17 avril", time: "21h30 – 2h30", lieu: "Bar Barracuda", type: "Soirée interBDE", theme: "Pirate", capacite: "À confirmer", prix: "Tarif étudiant (à confirmer)", inscription: "Libre", part: "Costumes encouragés · Musique à thème", teasing: "13 → 19 avril (7 jours)", visuels: "1 post annonce + stories" },
-  { key: "five", emoji: "⚽", name: "Five Football", date: "Jeudi 23 avril", time: "19h00", lieu: "À confirmer", type: "Match de foot à 5", theme: "—", capacite: "10 personnes", prix: "Payant (à confirmer)", inscription: "Obligatoire (DM ou lien)", part: "Mixte · Places limitées = FOMO", teasing: "20 → 24 avril (5 jours)", visuels: "1 post annonce + stories" },
-  { key: "bisous", emoji: "💋", name: "Bisous Bisous", date: "Jeudi 30 avril", time: "00h00 – 5h00", lieu: "Bisous Bisous (boîte)", type: "Soirée interBDE", theme: "À définir", capacite: "À confirmer", prix: "À confirmer", inscription: "Libre", part: "Before possible · Dernière soirée du mois", teasing: "27 → 30 avril (4 jours)", visuels: "1 post annonce + stories + TikTok" },
+  { key: "pirate", emoji: "🏴‍☠️", name: "Soirée Pirate", date: "Jeudi 17 avril", time: "21h30 – 2h30", lieu: "Bar Barracuda", type: "Soirée interBDE", theme: "Pirate", capacite: "À confirmer", prix: "Tarif étudiant (à confirmer)", inscription: "Libre", part: "Costumes encouragés · Musique à thème", teasing: "15 → 16 avril (2 jours)", visuels: "1 post annonce + stories" },
+  { key: "five", emoji: "⚽", name: "Five Football", date: "Mercredi 23 avril", time: "19h00", lieu: "À confirmer", type: "Match de foot à 5", theme: "—", capacite: "10 personnes", prix: "Payant (à confirmer)", inscription: "Obligatoire (DM ou lien)", part: "Mixte · Places limitées = FOMO", teasing: "19 → 22 avril (4 jours)", visuels: "1 post annonce + stories" },
+  { key: "bisous", emoji: "💋", name: "Bisous Bisous", date: "Mercredi 30 avril", time: "00h00 – 5h00", lieu: "Bisous Bisous (boîte)", type: "Soirée interBDE", theme: "À définir", capacite: "À confirmer", prix: "À confirmer", inscription: "Libre", part: "Before possible · Dernière soirée du mois · Recap le 1er mai", teasing: "21 → 29 avril (teasing croisé dès le 21)", visuels: "1 post annonce + stories + TikTok" },
 ];
 
 const getEK = (p) => { if (!p) return null; if (p.includes("pirate")) return "pirate"; if (p.includes("five")) return "five"; if (p.includes("bisous")) return "bisous"; return null; };
 
 function DetailContent({ ev, pm, selected, accent, dark, onClose }) {
   const dow = (2 + selected - 1) % 7;
+  const secMeta = ev.secondaryPhase ? PHASE_META[ev.secondaryPhase] : null;
+  const secEk = ev.secondaryPhase ? getEK(ev.secondaryPhase) : null;
+  const secAccent = secEk ? EC[secEk] : null;
   return (
     <>
       <div className="detail-header" style={{ padding: "22px 28px 18px", borderBottom: `1px solid var(--border-light)`, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
           <p style={{ fontSize: 11, color: "var(--text-xfaint)", fontFamily: "'JetBrains Mono', monospace", margin: "0 0 4px" }}>{DAYS_FULL[dow]} {selected} avril 2026</p>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <span className="detail-title" style={{ fontSize: 22, fontWeight: 600, color: "var(--text-primary)", fontFamily: "'Instrument Serif', serif" }}>{ev.format || "Contenu du jour"}</span>
-            <span style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: dark ? pm.darkTagBg : pm.tagBg, color: dark ? pm.darkTagColor : pm.tagColor }}>{pm.label}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: dark ? pm.darkTagBg : pm.tagBg, color: dark ? pm.darkTagColor : pm.tagColor }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: accent }} />
+              {pm.label}
+            </span>
+            {secMeta && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: dark ? secMeta.darkTagBg : secMeta.tagBg, color: dark ? secMeta.darkTagColor : secMeta.tagColor }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: secAccent }} />
+                {secMeta.label}
+              </span>
+            )}
           </div>
           {ev.event && <p style={{ fontSize: 14, fontWeight: 500, color: accent, margin: "6px 0 0" }}>{ev.event} — {ev.eventSub}</p>}
         </div>
@@ -99,7 +111,7 @@ function DetailContent({ ev, pm, selected, accent, dark, onClose }) {
         </div>
         <div style={{ marginBottom: 18 }}>
           <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Contenu à publier</p>
-          <div className="detail-content-box" style={{ background: "var(--bg-card-alt)", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "var(--text-secondary)", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
+          <div className="detail-content-box" style={{ background: "var(--bg-card-alt)", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "var(--text-secondary)", borderLeft: secMeta ? "3px solid transparent" : `3px solid ${accent}`, borderImage: secMeta ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : undefined, whiteSpace: "pre-line" }}>{ev.content}</div>
         </div>
         <div>
           <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Conseil</p>
@@ -201,17 +213,26 @@ export default function App() {
                 {wk.map((day, di) => {
                   if (!day) return <div key={di} className="calendar-cell-empty" style={{ borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128, background: "var(--bg-card-alt)" }} />;
                   const d = EVENTS[day]; const meta = d ? PHASE_META[d.phase] : null;
+                  const secMeta = d?.secondaryPhase ? PHASE_META[d.secondaryPhase] : null;
                   const isOff = d?.phase === "off"; const isEv = d?.phase?.startsWith("event-");
                   const isSel = selected === day; const ek = getEK(d?.phase);
-                  const accent = ek ? EC[ek] : null; const isToday = day === 14;
+                  const secEk = d?.secondaryPhase ? getEK(d.secondaryPhase) : null;
+                  const accent = ek ? EC[ek] : null; const secAccent = secEk ? EC[secEk] : null;
+                  const isToday = day === 14;
                   const dow = (2 + day - 1) % 7;
+                  const hasDual = !!secMeta;
+                  const borderLeftStyle = hasDual
+                    ? `3px solid ${accent}` // primary color, gradient via pseudo-element in CSS
+                    : isEv ? `3px solid ${accent}` : isSel ? `3px solid ${accent || "#888"}` : "3px solid transparent";
 
                   return (
-                    <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
+                    <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}${hasDual ? " calendar-cell-dual" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
                       borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
                       background: isSel ? (accent ? `${accent}15` : (dark ? "#1e1e2e" : "#f8f8ff")) : isEv ? `${accent}${dark ? "20" : "06"}` : "var(--bg-card)",
-                      borderLeft: isEv ? `3px solid ${accent}` : isSel ? `3px solid ${accent || "#888"}` : "3px solid transparent",
+                      borderLeft: "3px solid transparent",
+                      borderImage: hasDual ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : isEv || isSel ? undefined : undefined,
+                      borderLeftColor: !hasDual ? (isEv ? accent : isSel ? (accent || "#888") : "transparent") : undefined,
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -225,13 +246,28 @@ export default function App() {
                       {isOff ? (
                         <span style={{ fontSize: 11, color: "var(--text-off)" }}>—</span>
                       ) : (<>
-                        {meta && (
-                          <span style={{
-                            display: "inline-block", fontSize: 9, fontWeight: 600, letterSpacing: 0.3,
-                            background: dark ? meta.darkTagBg : meta.tagBg, color: dark ? meta.darkTagColor : meta.tagColor,
-                            padding: "2px 7px", borderRadius: 4, marginBottom: 6,
-                          }}>{meta.label}</span>
-                        )}
+                        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 6 }}>
+                          {meta && (
+                            <span style={{
+                              display: "inline-flex", alignItems: "center", gap: 3, fontSize: 9, fontWeight: 600, letterSpacing: 0.3,
+                              background: dark ? meta.darkTagBg : meta.tagBg, color: dark ? meta.darkTagColor : meta.tagColor,
+                              padding: "2px 7px", borderRadius: 4,
+                            }}>
+                              <span style={{ width: 5, height: 5, borderRadius: "50%", background: accent, display: "inline-block" }} />
+                              {meta.label}
+                            </span>
+                          )}
+                          {secMeta && (
+                            <span style={{
+                              display: "inline-flex", alignItems: "center", gap: 3, fontSize: 9, fontWeight: 600, letterSpacing: 0.3,
+                              background: dark ? secMeta.darkTagBg : secMeta.tagBg, color: dark ? secMeta.darkTagColor : secMeta.tagColor,
+                              padding: "2px 7px", borderRadius: 4,
+                            }}>
+                              <span style={{ width: 5, height: 5, borderRadius: "50%", background: secAccent, display: "inline-block" }} />
+                              {secMeta.label}
+                            </span>
+                          )}
+                        </div>
                         {d?.event && <div style={{ fontSize: 11, fontWeight: 700, color: accent, lineHeight: 1.2, marginBottom: 3 }}>{d.event}</div>}
                         {d?.format && <div style={{ fontSize: 10, color: "var(--text-muted)", lineHeight: 1.4, marginBottom: 2 }}>{d.format}</div>}
                         {d?.platform && <div className="cell-platform" style={{ fontSize: 9, color: "var(--text-xxfaint)", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
