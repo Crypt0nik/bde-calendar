@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EVENTS = {
   1: { phase: "regular", platform: "Instagram Story", content: "Story \"Avril c'est parti 🔥\" — Sondage : Prêts pour un mois de folie ? OUI / ÉVIDEMMENT", time: "18h00", tip: "Premier jour du mois = donner le ton, énergie max", format: "Sondage interactif" },
@@ -34,16 +34,16 @@ const EVENTS = {
 };
 
 const PHASE_META = {
-  "regular": { label: "Contenu", tagBg: "#f1f5f9", tagColor: "#64748b" },
+  "regular": { label: "Contenu", tagBg: "#f1f5f9", tagColor: "#64748b", darkTagBg: "#1e293b", darkTagColor: "#94a3b8" },
   "off": { label: "Repos" },
-  "teasing-pirate": { label: "Teasing", tagBg: "#fff7ed", tagColor: "#ea580c" },
-  "event-pirate": { label: "Jour J", tagBg: "#f97316", tagColor: "#fff" },
-  "recap-pirate": { label: "Recap", tagBg: "#ffedd5", tagColor: "#c2410c" },
-  "teasing-five": { label: "Teasing", tagBg: "#f0fdf4", tagColor: "#16a34a" },
-  "event-five": { label: "Jour J", tagBg: "#22c55e", tagColor: "#fff" },
-  "recap-five": { label: "Recap", tagBg: "#dcfce7", tagColor: "#15803d" },
-  "teasing-bisous": { label: "Teasing", tagBg: "#fdf2f8", tagColor: "#db2777" },
-  "event-bisous": { label: "Jour J", tagBg: "#ec4899", tagColor: "#fff" },
+  "teasing-pirate": { label: "Teasing", tagBg: "#fff7ed", tagColor: "#ea580c", darkTagBg: "#431407", darkTagColor: "#fb923c" },
+  "event-pirate": { label: "Jour J", tagBg: "#f97316", tagColor: "#fff", darkTagBg: "#f97316", darkTagColor: "#fff" },
+  "recap-pirate": { label: "Recap", tagBg: "#ffedd5", tagColor: "#c2410c", darkTagBg: "#431407", darkTagColor: "#fdba74" },
+  "teasing-five": { label: "Teasing", tagBg: "#f0fdf4", tagColor: "#16a34a", darkTagBg: "#052e16", darkTagColor: "#4ade80" },
+  "event-five": { label: "Jour J", tagBg: "#22c55e", tagColor: "#fff", darkTagBg: "#22c55e", darkTagColor: "#fff" },
+  "recap-five": { label: "Recap", tagBg: "#dcfce7", tagColor: "#15803d", darkTagBg: "#052e16", darkTagColor: "#86efac" },
+  "teasing-bisous": { label: "Teasing", tagBg: "#fdf2f8", tagColor: "#db2777", darkTagBg: "#500724", darkTagColor: "#f472b6" },
+  "event-bisous": { label: "Jour J", tagBg: "#ec4899", tagColor: "#fff", darkTagBg: "#ec4899", darkTagColor: "#fff" },
 };
 
 const EC = { pirate: "#f97316", five: "#22c55e", bisous: "#ec4899" };
@@ -73,9 +73,66 @@ const EVENT_RECAP = [
 
 const getEK = (p) => { if (!p) return null; if (p.includes("pirate")) return "pirate"; if (p.includes("five")) return "five"; if (p.includes("bisous")) return "bisous"; return null; };
 
+function DetailContent({ ev, pm, selected, accent, dark, onClose }) {
+  const dow = (2 + selected - 1) % 7;
+  return (
+    <>
+      <div className="detail-header" style={{ padding: "22px 28px 18px", borderBottom: `1px solid var(--border-light)`, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <p style={{ fontSize: 11, color: "var(--text-xfaint)", fontFamily: "'JetBrains Mono', monospace", margin: "0 0 4px" }}>{DAYS_FULL[dow]} {selected} avril 2026</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <span className="detail-title" style={{ fontSize: 22, fontWeight: 600, color: "var(--text-primary)", fontFamily: "'Instrument Serif', serif" }}>{ev.format || "Contenu du jour"}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: dark ? pm.darkTagBg : pm.tagBg, color: dark ? pm.darkTagColor : pm.tagColor }}>{pm.label}</span>
+          </div>
+          {ev.event && <p style={{ fontSize: 14, fontWeight: 500, color: accent, margin: "6px 0 0" }}>{ev.event} — {ev.eventSub}</p>}
+        </div>
+        <button onClick={onClose} style={{ background: "var(--close-btn-bg)", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: "var(--text-faint)" }}>✕</button>
+      </div>
+      <div className="detail-body" style={{ padding: "22px 28px 28px" }}>
+        <div className="detail-meta-row" style={{ display: "flex", gap: 32, marginBottom: 22, flexWrap: "wrap" }}>
+          {[["Plateforme", ev.platform], ["Heure de publication", ev.time]].map(([l, v]) => (
+            <div key={l}>
+              <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
+              <p style={{ fontSize: 15, fontWeight: 500, color: "var(--text-secondary)", margin: 0 }}>{v}</p>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginBottom: 18 }}>
+          <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Contenu à publier</p>
+          <div className="detail-content-box" style={{ background: "var(--bg-card-alt)", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "var(--text-secondary)", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
+        </div>
+        <div>
+          <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Conseil</p>
+          <div style={{ background: "var(--tip-bg)", borderRadius: 10, padding: "12px 18px", fontSize: 13, color: "var(--tip-color)", lineHeight: 1.6, border: "1px solid var(--tip-border)" }}>{ev.tip}</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [tab, setTab] = useState("calendar");
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("bde-dark-mode");
+      if (saved !== null) return saved === "true";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("bde-dark-mode", dark);
+  }, [dark]);
+
+  // Lock body scroll when mobile modal is open
+  useEffect(() => {
+    if (selected && window.innerWidth <= 768) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [selected]);
 
   const weeks = [];
   let w = [null, null];
@@ -85,25 +142,30 @@ export default function App() {
   const ev = selected ? EVENTS[selected] : null;
   const pm = ev ? PHASE_META[ev.phase] : null;
 
-  const s = { fontFamily: "'DM Sans', system-ui, sans-serif", background: "#f7f7f8", minHeight: "100vh", color: "#1a1a1a" };
-
   return (
-    <div style={s}>
+    <div className={dark ? "dark" : ""} style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "var(--bg)", minHeight: "100vh", color: "var(--text)", transition: "background 0.3s, color 0.3s" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
       {/* ── HEADER ── */}
-      <header style={{ background: "#fff", borderBottom: "1px solid #ebebeb" }}>
+      <header style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", transition: "background 0.3s" }}>
         <div className="app-header-inner" style={{ maxWidth: 1060, margin: "0 auto", padding: "32px 28px 0" }}>
-          <p className="app-subtitle" style={{ fontSize: 12, color: "#b0b0b0", margin: "0 0 2px", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Planning communication</p>
-          <h1 className="app-title" style={{ fontSize: 42, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "#111", letterSpacing: "-0.5px" }}>
-            Avril <span style={{ fontStyle: "italic" }}>2026</span>
-          </h1>
+          <div className="header-top-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <p className="app-subtitle" style={{ fontSize: 12, color: "var(--text-xfaint)", margin: "0 0 2px", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>Planning communication</p>
+              <h1 className="app-title" style={{ fontSize: 42, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "var(--text-primary)", letterSpacing: "-0.5px" }}>
+                Avril <span style={{ fontStyle: "italic" }}>2026</span>
+              </h1>
+            </div>
+            <button className="dark-toggle" onClick={() => setDark(!dark)}>
+              {dark ? "☀️" : "🌙"} {dark ? "Clair" : "Sombre"}
+            </button>
+          </div>
 
           <div className="event-pills" style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}>
             {EVENT_RECAP.map(e => (
-              <span key={e.key} className="event-pill" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: "#555", background: "#fff", border: "1px solid #e8e8e8", borderRadius: 100, padding: "5px 14px 5px 10px" }}>
+              <span key={e.key} className="event-pill" style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, color: "var(--text-secondary)", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 100, padding: "5px 14px 5px 10px" }}>
                 <span style={{ width: 7, height: 7, borderRadius: "50%", background: EC[e.key], display: "inline-block" }} />
-                {e.name} <span style={{ color: "#bbb", fontSize: 12 }}>·</span> <span className="event-pill-date" style={{ color: "#aaa", fontSize: 12 }}>{e.date}</span>
+                {e.name} <span style={{ color: "var(--text-xfaint)", fontSize: 12 }}>·</span> <span className="event-pill-date" style={{ color: "var(--text-faint)", fontSize: 12 }}>{e.date}</span>
               </span>
             ))}
           </div>
@@ -114,8 +176,8 @@ export default function App() {
               return (
                 <button key={id} onClick={() => { setTab(id); setSelected(null); }} style={{
                   background: "none", border: "none", cursor: "pointer", padding: "10px 20px", fontSize: 13,
-                  fontWeight: tab === id ? 600 : 400, color: tab === id ? "#111" : "#aaa",
-                  borderBottom: tab === id ? "2px solid #111" : "2px solid transparent", marginBottom: -1, transition: "all 0.15s",
+                  fontWeight: tab === id ? 600 : 400, color: tab === id ? "var(--text-primary)" : "var(--text-faint)",
+                  borderBottom: tab === id ? `2px solid var(--text-primary)` : "2px solid transparent", marginBottom: -1, transition: "all 0.15s",
                 }}>{labels[id]}</button>
               );
             })}
@@ -129,15 +191,15 @@ export default function App() {
         {tab === "calendar" && (<>
           <div className="calendar-days-header" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", marginBottom: 2 }}>
             {DAYS.map((d, i) => (
-              <div key={i} style={{ textAlign: "center", padding: "10px 0 6px", fontSize: 10, fontWeight: 500, color: "#c0c0c0", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>{d}</div>
+              <div key={i} style={{ textAlign: "center", padding: "10px 0 6px", fontSize: 10, fontWeight: 500, color: "var(--text-xxfaint)", letterSpacing: 2, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>{d}</div>
             ))}
           </div>
 
-          <div className="calendar-grid" style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div className="calendar-grid" style={{ background: "var(--bg-card)", borderRadius: 14, border: "1px solid var(--border)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
             {weeks.map((wk, wi) => (
-              <div key={wi} className="calendar-week" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderBottom: wi < weeks.length - 1 ? "1px solid #f2f2f2" : "none" }}>
+              <div key={wi} className="calendar-week" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderBottom: wi < weeks.length - 1 ? "1px solid var(--border-light)" : "none" }}>
                 {wk.map((day, di) => {
-                  if (!day) return <div key={di} className="calendar-cell-empty" style={{ borderRight: di < 6 ? "1px solid #f2f2f2" : "none", minHeight: 128, background: "#fafafa" }} />;
+                  if (!day) return <div key={di} className="calendar-cell-empty" style={{ borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128, background: "var(--bg-card-alt)" }} />;
                   const d = EVENTS[day]; const meta = d ? PHASE_META[d.phase] : null;
                   const isOff = d?.phase === "off"; const isEv = d?.phase?.startsWith("event-");
                   const isSel = selected === day; const ek = getEK(d?.phase);
@@ -146,34 +208,34 @@ export default function App() {
 
                   return (
                     <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
-                      borderRight: di < 6 ? "1px solid #f2f2f2" : "none", minHeight: 128,
+                      borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
-                      background: isSel ? (accent ? `${accent}06` : "#f8f8ff") : isEv ? `${accent}06` : "#fff",
+                      background: isSel ? (accent ? `${accent}15` : (dark ? "#1e1e2e" : "#f8f8ff")) : isEv ? `${accent}${dark ? "20" : "06"}` : "var(--bg-card)",
                       borderLeft: isEv ? `3px solid ${accent}` : isSel ? `3px solid ${accent || "#888"}` : "3px solid transparent",
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                         <span className="cell-day-number" style={{
                           fontSize: 20, fontWeight: isEv ? 700 : 500, fontFamily: "'JetBrains Mono', monospace",
-                          color: isOff ? "#d0d0d0" : isEv ? accent : isToday ? "#6366f1" : "#333",
+                          color: isOff ? "var(--text-off)" : isEv ? accent : isToday ? "#6366f1" : "var(--text-secondary)",
                         }}><span className="cell-day-name" style={{ display: "none" }}>{DAYS_FULL[dow]} </span>{day}</span>
                         {isToday && <span style={{ fontSize: 8, background: "#6366f1", color: "#fff", padding: "2px 6px", borderRadius: 3, fontWeight: 600, letterSpacing: 0.5 }}>Aujourd'hui</span>}
                       </div>
 
                       {isOff ? (
-                        <span style={{ fontSize: 11, color: "#d0d0d0" }}>—</span>
+                        <span style={{ fontSize: 11, color: "var(--text-off)" }}>—</span>
                       ) : (<>
                         {meta && (
                           <span style={{
                             display: "inline-block", fontSize: 9, fontWeight: 600, letterSpacing: 0.3,
-                            background: meta.tagBg, color: meta.tagColor,
+                            background: dark ? meta.darkTagBg : meta.tagBg, color: dark ? meta.darkTagColor : meta.tagColor,
                             padding: "2px 7px", borderRadius: 4, marginBottom: 6,
                           }}>{meta.label}</span>
                         )}
                         {d?.event && <div style={{ fontSize: 11, fontWeight: 700, color: accent, lineHeight: 1.2, marginBottom: 3 }}>{d.event}</div>}
-                        {d?.format && <div style={{ fontSize: 10, color: "#888", lineHeight: 1.4, marginBottom: 2 }}>{d.format}</div>}
-                        {d?.platform && <div className="cell-platform" style={{ fontSize: 9, color: "#c0c0c0", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
-                        {d?.time && <div className="cell-time" style={{ fontSize: 9, color: "#bbb", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, right: 10 }}>{d.time}</div>}
+                        {d?.format && <div style={{ fontSize: 10, color: "var(--text-muted)", lineHeight: 1.4, marginBottom: 2 }}>{d.format}</div>}
+                        {d?.platform && <div className="cell-platform" style={{ fontSize: 9, color: "var(--text-xxfaint)", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
+                        {d?.time && <div className="cell-time" style={{ fontSize: 9, color: "var(--text-xfaint)", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, right: 10 }}>{d.time}</div>}
                       </>)}
                     </div>
                   );
@@ -182,46 +244,30 @@ export default function App() {
             ))}
           </div>
 
-          {/* Detail */}
+          {/* Desktop Detail */}
           {ev && ev.phase !== "off" && (() => {
             const ek = getEK(ev.phase); const accent = ek ? EC[ek] : "#6366f1";
-            const dow = (2 + selected - 1) % 7;
             return (
-              <div className="detail-panel" style={{ marginTop: 20, background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", animation: "su .2s ease" }}>
-                <style>{`@keyframes su{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}`}</style>
-                <div className="detail-header" style={{ padding: "22px 28px 18px", borderBottom: "1px solid #f2f2f2", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <p style={{ fontSize: 11, color: "#bbb", fontFamily: "'JetBrains Mono', monospace", margin: "0 0 4px" }}>{DAYS_FULL[dow]} {selected} avril 2026</p>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                      <span className="detail-title" style={{ fontSize: 22, fontWeight: 600, color: "#111", fontFamily: "'Instrument Serif', serif" }}>{ev.format || "Contenu du jour"}</span>
-                      <span style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 100, background: pm.tagBg, color: pm.tagColor }}>{pm.label}</span>
-                    </div>
-                    {ev.event && <p style={{ fontSize: 14, fontWeight: 500, color: accent, margin: "6px 0 0" }}>{ev.event} — {ev.eventSub}</p>}
-                  </div>
-                  <button onClick={() => setSelected(null)} style={{ background: "#f5f5f5", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: "#aaa" }}>✕</button>
-                </div>
-                <div className="detail-body" style={{ padding: "22px 28px 28px" }}>
-                  <div className="detail-meta-row" style={{ display: "flex", gap: 32, marginBottom: 22, flexWrap: "wrap" }}>
-                    {[["Plateforme", ev.platform], ["Heure de publication", ev.time]].map(([l, v]) => (
-                      <div key={l}>
-                        <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 4px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
-                        <p style={{ fontSize: 15, fontWeight: 500, color: "#333", margin: 0 }}>{v}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ marginBottom: 18 }}>
-                    <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Contenu à publier</p>
-                    <div className="detail-content-box" style={{ background: "#fafafa", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "#333", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>💡 Conseil</p>
-                    <div style={{ background: "#fffbeb", borderRadius: 10, padding: "12px 18px", fontSize: 13, color: "#92400e", lineHeight: 1.6, border: "1px solid #fef3c7" }}>{ev.tip}</div>
-                  </div>
+              <div className="detail-panel-desktop" style={{ marginTop: 20, background: "var(--bg-card)", borderRadius: 14, border: "1px solid var(--border)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", animation: "su .2s ease" }}>
+                <DetailContent ev={ev} pm={pm} selected={selected} accent={accent} dark={dark} onClose={() => setSelected(null)} />
+              </div>
+            );
+          })()}
+
+          {/* Mobile Modal */}
+          {ev && ev.phase !== "off" && (() => {
+            const ek = getEK(ev.phase); const accent = ek ? EC[ek] : "#6366f1";
+            return (
+              <div className="mobile-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
+                <div className="mobile-modal-content">
+                  <div className="mobile-modal-handle" />
+                  <DetailContent ev={ev} pm={pm} selected={selected} accent={accent} dark={dark} onClose={() => setSelected(null)} />
                 </div>
               </div>
             );
           })()}
-          {!selected && <p style={{ textAlign: "center", color: "#ccc", fontSize: 12, marginTop: 24, fontStyle: "italic" }}>Clique sur un jour pour voir le détail</p>}
+
+          {!selected && <p style={{ textAlign: "center", color: "var(--text-xxxfaint)", fontSize: 12, marginTop: 24, fontStyle: "italic" }}>Clique sur un jour pour voir le détail</p>}
         </>)}
 
         {/* ═══ EVENTS ═══ */}
@@ -231,19 +277,19 @@ export default function App() {
               const c = EC[e.key];
               const rows = [["Date", e.date], ["Horaires", e.time], ["Lieu", e.lieu], ["Type", e.type], ["Thème", e.theme], ["Capacité", e.capacite], ["Prix", e.prix], ["Inscription", e.inscription], ["Particularité", e.part], ["Période teasing", e.teasing], ["Visuels à créer", e.visuels]];
               return (
-                <div key={e.key} style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8e8e8", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
-                  <div className="event-card-header" style={{ padding: "22px 28px", borderBottom: "1px solid #f2f2f2", display: "flex", alignItems: "center", gap: 14 }}>
+                <div key={e.key} style={{ background: "var(--bg-card)", borderRadius: 14, border: "1px solid var(--border)", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                  <div className="event-card-header" style={{ padding: "22px 28px", borderBottom: "1px solid var(--border-light)", display: "flex", alignItems: "center", gap: 14 }}>
                     <div style={{ width: 4, height: 36, borderRadius: 2, background: c }} />
                     <div>
-                      <h2 style={{ fontSize: 22, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "#111" }}>{e.emoji} {e.name}</h2>
-                      <p style={{ fontSize: 13, color: "#aaa", margin: "2px 0 0" }}>{e.date} · {e.time}</p>
+                      <h2 style={{ fontSize: 22, fontWeight: 400, margin: 0, fontFamily: "'Instrument Serif', serif", color: "var(--text-primary)" }}>{e.emoji} {e.name}</h2>
+                      <p style={{ fontSize: 13, color: "var(--text-faint)", margin: "2px 0 0" }}>{e.date} · {e.time}</p>
                     </div>
                   </div>
                   <div className="event-card-grid" style={{ padding: "18px 28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "14px 28px" }}>
                     {rows.map(([l, v]) => (
                       <div key={l}>
-                        <p style={{ fontSize: 10, color: "#c0c0c0", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 3px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
-                        <p style={{ fontSize: 14, color: "#333", margin: 0, fontWeight: 450 }}>{v}</p>
+                        <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 3px", fontFamily: "'JetBrains Mono', monospace" }}>{l}</p>
+                        <p style={{ fontSize: 14, color: "var(--text-secondary)", margin: 0, fontWeight: 450 }}>{v}</p>
                       </div>
                     ))}
                   </div>
@@ -255,16 +301,16 @@ export default function App() {
 
         {/* ═══ IDEAS ═══ */}
         {tab === "ideas" && (<>
-          <p style={{ fontSize: 14, color: "#999", margin: "0 0 20px", fontStyle: "italic" }}>12 formats créatifs à utiliser pour tes stories et posts tout au long du mois.</p>
+          <p style={{ fontSize: 14, color: "var(--text-muted)", margin: "0 0 20px", fontStyle: "italic" }}>12 formats créatifs à utiliser pour tes stories et posts tout au long du mois.</p>
           <div className="ideas-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
             {IDEAS.map((idea, i) => (
-              <div key={i} style={{ background: "#fff", borderRadius: 12, border: "1px solid #e8e8e8", padding: "20px 22px", display: "flex", flexDirection: "column", gap: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+              <div key={i} style={{ background: "var(--bg-card)", borderRadius: 12, border: "1px solid var(--border)", padding: "20px 22px", display: "flex", flexDirection: "column", gap: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
                   <span style={{ fontSize: 20 }}>{idea.icon}</span>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: "#111" }}>{idea.name}</span>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{idea.name}</span>
                 </div>
-                <p style={{ fontSize: 13, color: "#666", lineHeight: 1.6, margin: 0 }}>{idea.desc}</p>
-                <p style={{ fontSize: 11, color: "#aaa", background: "#f8f8f8", padding: "5px 10px", borderRadius: 6, margin: "6px 0 0", fontFamily: "'JetBrains Mono', monospace" }}>{idea.when}</p>
+                <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.6, margin: 0 }}>{idea.desc}</p>
+                <p style={{ fontSize: 11, color: "var(--text-faint)", background: "var(--idea-when-bg)", padding: "5px 10px", borderRadius: 6, margin: "6px 0 0", fontFamily: "'JetBrains Mono', monospace" }}>{idea.when}</p>
               </div>
             ))}
           </div>

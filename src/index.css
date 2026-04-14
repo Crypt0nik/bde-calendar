@@ -9,6 +9,79 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── CSS VARIABLES ── */
+:root {
+  --bg: #f7f7f8;
+  --bg-card: #fff;
+  --bg-card-alt: #fafafa;
+  --bg-header: #fff;
+  --border: #e8e8e8;
+  --border-light: #f2f2f2;
+  --text: #1a1a1a;
+  --text-primary: #111;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --text-faint: #aaa;
+  --text-xfaint: #bbb;
+  --text-xxfaint: #c0c0c0;
+  --text-xxxfaint: #ccc;
+  --text-off: #d0d0d0;
+  --tag-bg-default: #f5f5f5;
+  --tip-bg: #fffbeb;
+  --tip-color: #92400e;
+  --tip-border: #fef3c7;
+  --idea-when-bg: #f8f8f8;
+  --close-btn-bg: #f5f5f5;
+}
+
+.dark {
+  --bg: #0f0f0f;
+  --bg-card: #1a1a1a;
+  --bg-card-alt: #222;
+  --bg-header: #141414;
+  --border: #2a2a2a;
+  --border-light: #222;
+  --text: #e5e5e5;
+  --text-primary: #f0f0f0;
+  --text-secondary: #bbb;
+  --text-muted: #888;
+  --text-faint: #777;
+  --text-xfaint: #666;
+  --text-xxfaint: #555;
+  --text-xxxfaint: #444;
+  --text-off: #333;
+  --tag-bg-default: #2a2a2a;
+  --tip-bg: #1c1708;
+  --tip-color: #fbbf24;
+  --tip-border: #3d3209;
+  --idea-when-bg: #222;
+  --close-btn-bg: #2a2a2a;
+}
+
+/* ── DARK MODE TOGGLE ── */
+.dark-toggle {
+  background: var(--tag-bg-default);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-faint);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dark-toggle:hover {
+  border-color: var(--text-muted);
+}
+
+/* ── MOBILE MODAL OVERLAY ── */
+.mobile-modal-overlay {
+  display: none;
+}
+
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 768px) {
   .app-header-inner {
@@ -21,6 +94,12 @@ body {
 
   .app-subtitle {
     font-size: 10px !important;
+  }
+
+  .header-top-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
   }
 
   .event-pills {
@@ -78,8 +157,8 @@ body {
     min-height: auto !important;
     padding: 12px 14px !important;
     border-radius: 10px !important;
-    border: 1px solid #e8e8e8 !important;
-    background: #fff !important;
+    border: 1px solid var(--border) !important;
+    background: var(--bg-card) !important;
   }
 
   .calendar-cell-off {
@@ -104,40 +183,69 @@ body {
     margin-top: 2px;
   }
 
-  .calendar-cell .cell-bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 6px;
+  /* Show day name on mobile */
+  .cell-day-name {
+    display: inline !important;
   }
 
-  /* Detail panel */
-  .detail-panel {
-    margin-top: 12px !important;
-    border-radius: 10px !important;
+  /* Hide desktop detail panel on mobile */
+  .detail-panel-desktop {
+    display: none !important;
   }
 
-  .detail-header {
-    padding: 16px 16px 14px !important;
+  /* Mobile modal */
+  .mobile-modal-overlay {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    animation: fadeIn 0.15s ease;
+  }
+
+  .dark .mobile-modal-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .mobile-modal-content {
+    background: var(--bg-card);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  .mobile-modal-content .detail-header {
+    padding: 20px 20px 14px !important;
     flex-direction: column !important;
     gap: 10px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-card);
+    z-index: 1;
+    border-bottom: 1px solid var(--border);
   }
 
-  .detail-header .detail-title {
+  .mobile-modal-content .detail-title {
     font-size: 18px !important;
   }
 
-  .detail-body {
-    padding: 16px !important;
+  .mobile-modal-content .detail-body {
+    padding: 16px 20px 24px !important;
   }
 
-  .detail-meta-row {
-    gap: 20px !important;
-  }
-
-  .detail-content-box {
-    padding: 12px 14px !important;
-    font-size: 13px !important;
+  .mobile-modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--text-xxxfaint);
+    border-radius: 2px;
+    margin: 10px auto 0;
   }
 
   /* Events tab */
@@ -159,9 +267,19 @@ body {
   .ideas-grid {
     grid-template-columns: 1fr !important;
   }
+}
 
-  /* Show day name on mobile */
-  .cell-day-name {
-    display: inline !important;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes su {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
