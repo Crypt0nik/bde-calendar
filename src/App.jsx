@@ -227,7 +227,7 @@ export default function App() {
                   const isSel = selected === day; const ek = getEK(d?.phase);
                   const secEk = d?.secondaryPhase ? getEK(d.secondaryPhase) : null;
                   const accent = ek ? EC[ek] : null; const secAccent = secEk ? EC[secEk] : null;
-                  const isToday = day === 14;
+                  const now = new Date(); const isToday = now.getMonth() === 3 && now.getFullYear() === 2026 && day === now.getDate();
                   const dow = (2 + day - 1) % 7;
                   const hasDual = !!secMeta;
                   const borderLeftStyle = hasDual
