@@ -111,7 +111,7 @@ function DetailContent({ ev, pm, selected, accent, dark, onClose }) {
         </div>
         <div style={{ marginBottom: 18 }}>
           <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Contenu à publier</p>
-          <div className="detail-content-box" style={{ background: "var(--bg-card-alt)", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "var(--text-secondary)", borderLeft: secMeta ? "3px solid transparent" : `3px solid ${accent}`, borderImage: secMeta ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : undefined, whiteSpace: "pre-line" }}>{ev.content}</div>
+          <div className="detail-content-box" style={{ background: "var(--bg-card-alt)", borderRadius: 10, padding: "16px 20px", fontSize: 14, lineHeight: 1.75, color: "var(--text-secondary)", borderLeft: `3px solid ${accent}`, whiteSpace: "pre-line" }}>{ev.content}</div>
         </div>
         <div>
           <p style={{ fontSize: 10, color: "var(--text-xxfaint)", textTransform: "uppercase", letterSpacing: 1.5, margin: "0 0 8px", fontFamily: "'JetBrains Mono', monospace" }}>Conseil</p>
@@ -236,10 +236,7 @@ export default function App() {
                       borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
                       background: isSel ? (accent ? `${accent}15` : (dark ? "#1e1e2e" : "#f8f8ff")) : isEv ? `${accent}${dark ? "20" : "06"}` : "var(--bg-card)",
-                      borderLeft: (isSel && hasDual) ? "3px solid transparent" : `3px solid ${isEv ? accent : isSel ? (accent || "#888") : "transparent"}`,
-                      backgroundImage: (isSel && hasDual) ? `linear-gradient(var(--bg-card), var(--bg-card)), linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%)` : undefined,
-                      backgroundOrigin: (isSel && hasDual) ? "padding-box, border-box" : undefined,
-                      backgroundClip: (isSel && hasDual) ? "padding-box, border-box" : undefined,
+                      borderLeft: `3px solid ${isEv ? accent : isSel ? (accent || "#888") : "transparent"}`,
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
