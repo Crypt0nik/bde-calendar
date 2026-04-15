@@ -236,9 +236,12 @@ export default function App() {
                       borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
                       background: isSel ? (accent ? `${accent}15` : (dark ? "#1e1e2e" : "#f8f8ff")) : isEv ? `${accent}${dark ? "20" : "06"}` : "var(--bg-card)",
-                      borderLeft: "3px solid transparent",
-                      borderImage: (isSel && hasDual) ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : undefined,
-                      borderLeftColor: (isSel && hasDual) ? undefined : (isEv ? accent : isSel ? (accent || "#888") : "transparent"),
+                      borderLeft: (isSel && hasDual) ? "none" : `3px solid ${isEv ? accent : isSel ? (accent || "#888") : "transparent"}`,
+                      backgroundImage: (isSel && hasDual) ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%)` : undefined,
+                      backgroundSize: (isSel && hasDual) ? "3px 100%" : undefined,
+                      backgroundRepeat: (isSel && hasDual) ? "no-repeat" : undefined,
+                      backgroundPosition: (isSel && hasDual) ? "left" : undefined,
+                      paddingLeft: (isSel && hasDual) ? 13 : undefined,
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
