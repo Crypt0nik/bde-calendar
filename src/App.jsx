@@ -136,7 +136,7 @@ const IDEAS = [
   { icon: "💬", name: "Confession / Anecdote", desc: "\"Mon pire moment en event\" par les membres du BDE. Format authentique et drôle qui humanise le BDE.", when: "Semaine calme entre 2 events" },
 ];
 
-function DetailContent({ ev, pm, selected, accent, dark, onClose, monthData }) {
+function DetailContent({ ev, pm, selected, accent, dark, onClose, monthData, hideClose }) {
   const dow = (monthData.offset + selected - 1) % 7;
   const secMeta = ev.secondaryPhase ? PHASE_META[ev.secondaryPhase] : null;
   const secEk = ev.secondaryPhase ? getEK(ev.secondaryPhase) : null;
@@ -161,7 +161,7 @@ function DetailContent({ ev, pm, selected, accent, dark, onClose, monthData }) {
           </div>
           {ev.event && <p style={{ fontSize: 14, fontWeight: 500, color: accent, margin: "6px 0 0" }}>{ev.event} — {ev.eventSub}</p>}
         </div>
-        <button onClick={onClose} style={{ background: "var(--close-btn-bg)", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: "var(--text-faint)" }}>✕</button>
+        {!hideClose && <button onClick={onClose} style={{ background: "var(--close-btn-bg)", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: "var(--text-faint)" }}>✕</button>}
       </div>
       <div className="detail-body" style={{ padding: "22px 28px 28px" }}>
         <div className="detail-meta-row" style={{ display: "flex", gap: 32, marginBottom: 22, flexWrap: "wrap" }}>
@@ -407,7 +407,7 @@ export default function App() {
             const ek = getEK(ev.phase); const accent = ek ? EC[ek] : "#6366f1";
             return (
               <SwipeModal onClose={() => setSelected(null)}>
-                  <DetailContent ev={ev} pm={pm} selected={selected} accent={accent} dark={dark} onClose={() => setSelected(null)} monthData={month} />
+                  <DetailContent ev={ev} pm={pm} selected={selected} accent={accent} dark={dark} onClose={() => setSelected(null)} monthData={month} hideClose />
               </SwipeModal>
             );
           })()}
