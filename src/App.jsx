@@ -275,7 +275,6 @@ export default function App() {
                         {d?.event && <div style={{ fontSize: 11, fontWeight: 700, color: accent, lineHeight: 1.2, marginBottom: 3 }}>{d.event}</div>}
                         {d?.format && <div style={{ fontSize: 10, color: "var(--text-muted)", lineHeight: 1.4, marginBottom: 2 }}>{d.format}</div>}
                         {d?.platform && <div className="cell-platform" style={{ fontSize: 9, color: "var(--text-xxfaint)", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, left: 13 }}>{d.platform}</div>}
-                        {d?.time && <div className="cell-time" style={{ fontSize: 9, color: "var(--text-xfaint)", fontFamily: "'JetBrains Mono', monospace", position: "absolute", bottom: 8, right: 10 }}>{d.time}</div>}
                       </>)}
                     </div>
                   );
