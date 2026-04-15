@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const DAYS_FULL = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
@@ -185,6 +185,49 @@ function DetailContent({ ev, pm, selected, accent, dark, onClose, monthData }) {
   );
 }
 
+function SwipeModal({ onClose, children }) {
+  const sheetRef = useRef(null);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+  const dragging = useRef(false);
+
+  const onTouchStart = useCallback((e) => {
+    dragging.current = true;
+    startY.current = e.touches[0].clientY;
+    currentY.current = 0;
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  }, []);
+
+  const onTouchMove = useCallback((e) => {
+    if (!dragging.current) return;
+    const dy = e.touches[0].clientY - startY.current;
+    currentY.current = Math.max(0, dy);
+    if (sheetRef.current) sheetRef.current.style.transform = `translateY(${currentY.current}px)`;
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    dragging.current = false;
+    if (!sheetRef.current) return;
+    sheetRef.current.style.transition = "transform 0.25s ease";
+    if (currentY.current > 100) {
+      sheetRef.current.style.transform = "translateY(100%)";
+      setTimeout(onClose, 200);
+    } else {
+      sheetRef.current.style.transform = "translateY(0)";
+    }
+  }, [onClose]);
+
+  return (
+    <div className="mobile-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="mobile-modal-content" ref={sheetRef}
+        onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+        <div className="mobile-modal-handle" />
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function MonthArrow({ direction, onClick }) {
   return (
     <button onClick={onClick} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "var(--text-faint)", display: "flex", alignItems: "center", transition: "color 0.15s" }} onMouseEnter={e => e.target.style.color = "var(--text-primary)"} onMouseLeave={e => e.target.style.color = "var(--text-faint)"}>
@@ -363,12 +406,9 @@ export default function App() {
           {ev && ev.phase !== "off" && (() => {
             const ek = getEK(ev.phase); const accent = ek ? EC[ek] : "#6366f1";
             return (
-              <div className="mobile-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setSelected(null); }}>
-                <div className="mobile-modal-content">
-                  <div className="mobile-modal-handle" />
+              <SwipeModal onClose={() => setSelected(null)}>
                   <DetailContent ev={ev} pm={pm} selected={selected} accent={accent} dark={dark} onClose={() => setSelected(null)} monthData={month} />
-                </div>
-              </div>
+              </SwipeModal>
             );
           })()}
 
