@@ -230,18 +230,15 @@ export default function App() {
                   const now = new Date(); const isToday = now.getMonth() === 3 && now.getFullYear() === 2026 && day === now.getDate();
                   const dow = (2 + day - 1) % 7;
                   const hasDual = !!secMeta;
-                  const borderLeftStyle = hasDual
-                    ? `3px solid ${accent}` // primary color, gradient via pseudo-element in CSS
-                    : isEv ? `3px solid ${accent}` : isSel ? `3px solid ${accent || "#888"}` : "3px solid transparent";
 
                   return (
-                    <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}${hasDual ? " calendar-cell-dual" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
+                    <div key={di} className={`calendar-cell${isOff ? " calendar-cell-off" : ""}`} onClick={() => !isOff && setSelected(isSel ? null : day)} style={{
                       borderRight: di < 6 ? "1px solid var(--border-light)" : "none", minHeight: 128,
                       padding: 10, cursor: isOff ? "default" : "pointer", position: "relative",
                       background: isSel ? (accent ? `${accent}15` : (dark ? "#1e1e2e" : "#f8f8ff")) : isEv ? `${accent}${dark ? "20" : "06"}` : "var(--bg-card)",
                       borderLeft: "3px solid transparent",
-                      borderImage: hasDual ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : isEv || isSel ? undefined : undefined,
-                      borderLeftColor: !hasDual ? (isEv ? accent : isSel ? (accent || "#888") : "transparent") : undefined,
+                      borderImage: (isSel && hasDual) ? `linear-gradient(to bottom, ${accent} 50%, ${secAccent} 50%) 1` : undefined,
+                      borderLeftColor: (isSel && hasDual) ? undefined : (isEv ? accent : isSel ? (accent || "#888") : "transparent"),
                       transition: "all 0.12s ease", opacity: isOff ? 0.45 : 1,
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
